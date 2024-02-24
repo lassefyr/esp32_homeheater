@@ -39,3 +39,11 @@ License: MIT
 
 Creates LIB directory to your device.
 Contains utemplate and utemplate-1.4.1.dist-info directories
+
+## secrets.py ##
+Add secrets.py directly on your esp32 device.  
+This file should contain the following two lines
+```
+SSID = "MY_WIFI_NETWORK_NAME"
+PASSWORD = "MY_WIFI_PASSWORD"
+```
