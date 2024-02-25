@@ -65,7 +65,10 @@ class HState:
         ave = sum(self.tavg)/len(self.tavg)
         readPrice.currPrice.temp = ave
         print( str(ave) )
-        self.ds.convert_temp()
+        try:
+            self.ds.convert_temp()
+        except onewire.OneWireError:
+            print("Onewire Convert Error")
                 
     def en_15kW(self):
         self.p15kW.value(1)
@@ -82,10 +85,12 @@ class HState:
     def chk15kW(self):
         if(self.pIn.value()):
             self.tim15kW+=1
+            readPrice.currPrice.oOff=True
             if(self.tim15kW > 10):
                 self.tim15kW = 10
                 self.en_9kW()
         else:
+            readPrice.currPrice.oOff=False
             self.dis_9kW()
             self.tim15kW=0
                 
@@ -114,21 +119,18 @@ async def myBG():
         myP.checkIfUpd(myP.getCH())        
         print("CurPrice = "+str(myP.getCurrPrice(myP.getCH())))
         print("Limit = "+str(myP.getLim()))
-        print(gc.mem_free())
+        #print(gc.mem_free())
         if( myP.getPriceNow() > myP.getLim()):
-            print("drives OFF")
-            readPrice.currPrice.oOff=False
+            print("drives OFF")            
             relMod.dis_15kW()
         else:
-            print("Halpaa -- ON")
-            readPrice.currPrice.oOff=True
+            print("Halpaa -- ON")            
             relMod.en_15kW()
         relMod.chk15kW()
         led_m.toggle()
         relMod.tempRead()
         
         await uasyncio.sleep(10)        
-        #print("Local time after synchronization：%s" %str(time.localtime()))
 
 def doConnect():
     import network
@@ -149,31 +151,13 @@ def doConnect():
             print('\nConnected. Network config: ', sta_if.ifconfig())
         else:
             print("Failed connection")
-            machine.soft_reset()
-        '''
-        try:
-            sta_if.connect(ssid, password)
-        except OSError as e:
-            print("Failed connection")
-        uasyncio.sleep(10)                
-        if( not sta_if.isconnected() ):
-            print("Failed connection")
-            machine.soft_reset()
-        '''
-    #print("Connected! Network config:", sta_if.ifconfig())    
-        #while not sta_if.isconnected():
-        #    pass
-    #print('Connected! Network config:', sta_if.ifconfig())
+            machine.soft_reset()        
 
 gc.collect()
 from microdot_asyncio import Microdot, Response, send_file
 from microdot_utemplate import render_template
 
-print("Connecting to your wifi...")
 doConnect()
-
-#tim1 = Timer(1)
-#tim1.init(period=10000, mode=Timer.PERIODIC, callback=myTimer)
 
 uasyncio.create_task(myBG())
 myGet = gethtml.getHTML()
@@ -183,7 +167,7 @@ Response.default_content_type = 'text/html'
 
 @app.route('/')
 async def index(request):
-    return myGet.getPage() #, led_value=led_module.get_value(5))
+    return myGet.getPage() 
 
 @app.route('/toggle')
 async def toggle_led(request):

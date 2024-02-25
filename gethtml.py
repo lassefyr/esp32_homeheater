@@ -67,7 +67,7 @@ Price Down
         location.reload(true);
         })
         .catch(error => {
-        console.log(error)
+        console.log("Virhe")
         });
     });
 
@@ -140,32 +140,6 @@ htdata_4 = """,
         });
     }
     drawGage();
-</script>
-
-<script>
-        // JavaScript code to handle button clicks
-        var button1 = document.getElementById("button1");
-        var button2 = document.getElementById("button2");
-
-        button1.addEventListener("click", function() {
-                fetch(`/pup`)
-                .then(response => {
-                console.log(response)
-                })
-                .catch(error => {
-                console.log(error)
-                });
-        });
-
-        button2.addEventListener("click", function() {
-                fetch(`/pdown`)
-                .then(response => {
-                console.log(response)
-                })
-                .catch(error => {
-                console.log(error)
-                });
-        });
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 <div class="chart">
@@ -244,7 +218,7 @@ class getHTML:
     
     def getTime(self):
         myT = self.myP.getTime()
-        print(str(self.myP.getTime()))
+        #print(str(self.myP.getTime()))
         Dy, Dm, Dd, Dx, Dh, Dmi, Ds1, Ds2 = (myT)
         df = "{:02d}/{:02d}/{} {:02d}:{:02d}"
         return(df.format(Dd, Dm, Dy, self.myP.getCH(), Dmi))        
@@ -254,7 +228,7 @@ class getHTML:
         for i in range(24):     
             myprices = myprices+str(self.myP.getCurrPrice(i))
             if i >= 23:
-                print(myprices)
+                #print(myprices)
                 return myprices
             myprices = myprices + ","
     

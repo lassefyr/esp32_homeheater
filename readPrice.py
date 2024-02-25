@@ -27,7 +27,7 @@ class currPrice:
         return(currPrice.temp)
         
     def setLim(self, value):
-        print("setlimit to " + str(value))
+        #print("setlimit to " + str(value))
         currPrice.limP = value
     
     def getLim(self):
@@ -35,11 +35,10 @@ class currPrice:
         
     def read_json_from_url(self):
         try:
-            f=open("Today.json")
-            #response = requests.get(url=url)
-            #response.raise_for_status()  # Check for any HTTP errors
-            #json_data = response.json()
-            json_data = json.load(f)
+            #f=open("Today.json")
+            #json_data = json.load(f)
+            response = requests.get(url=url)            
+            json_data = response.json()            
             return json_data
         except:
             print("Error in read_json")
@@ -88,7 +87,7 @@ class currPrice:
                 currPrice.curPr = []
                 currPrice.needRd = False
                 myStr=myData[0]["DateTime"]   # Format "2023-06-19T00:00:00+03:00"
-                print(myStr[21:22])
+                #print(myStr[21:22])
                 try:
                     self.setCurClkDev(int(myStr[21:22]))
                 except ValueError:
